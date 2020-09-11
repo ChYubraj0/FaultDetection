@@ -22,3 +22,4 @@ void loop() {
   lcd.print("A");
   delay(0.5);
 }
+//C:\\Users\\dell\\AppData\\Local\\Temp\\arduino_build_554204/DCcurrentSensorProgramme.ino.elf

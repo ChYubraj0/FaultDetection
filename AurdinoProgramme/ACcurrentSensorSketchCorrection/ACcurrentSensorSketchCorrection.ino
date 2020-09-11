@@ -38,4 +38,4 @@ void loop(){
   result = ((maxValue - minValue) * 5.0)/1024.0;
   return result;
 
-}//C:\\Users\\dell\\AppData\\Local\\Temp\\arduino_build_699358/ACcurrentSensorSketchCorrection.ino.hex
+}//C:\\Users\\dell\\AppData\\Local\\Temp\\arduino_build_513866/ACcurrentSensorSketchCorrection.ino.hex

@@ -1,14 +1,18 @@
 #include<LiquidCrystal.h>
+#include"ACmeter.h"
+#include"errorhandling.h"
 LiquidCrystal lcd(8,9,10,11,12,13);
-const int currentSensorChannel=A1;
-const int voltageSensorChannel=A0; 
-const int CSsensitivity=100;
-double currentRMS=0;
-const float rConst=11.00;// r4/(r1+r4)
-const float tConst =19.17;// vsec*(lprim/lsec)^(1/2)
-double voltAtDivider=0;
-double voltAtSec=0;
-double voltAtPrim=0;
+const int CS_channel=A1;
+const int VS_channel=A0; 
+const int CS_sensitivity=100.0;
+double sensed_rms;
+double amps_rms;
+const float r_const=11.00;// r4/(r1+r4)
+const float t_const =19.17;// vsec*(lprim/lsec)^(1/2)
+double volt_at_divider;
+double volt_at_sec;
+double volt_at_prim;
+float error;
 void setup(){
   lcd.begin(20,4);
   lcd.setCursor(0,0);
@@ -17,31 +21,18 @@ void setup(){
   lcd.print("CurrentRMS=");
 }
 void loop(){
+  AcMeter a;
+  AcMeter b;
+  ErrorHandling e;
   lcd.setCursor(12,0);
-  voltAtDivider=getVolt(voltageSensorChannel)*0.707;
-  voltAtSec=rConst*voltAtDivider;
-  voltAtPrim=tConst*voltAtSec;
-  lcd.print(voltAtPrim);
+  volt_at_divider=a.getRMS(VS_channel);
+  volt_at_sec=r_const*volt_at_divider;
+  volt_at_prim=t_const*volt_at_sec;
+  error=e.error(volt_at_prim);
+  lcd.print(volt_at_prim+error);
   lcd.setCursor(12,1);
-  currentRMS=getVolt(currentSensorChannel)*0.707*1000/(2*CSsensitivity);
-  lcd.print(currentRMS);
+  sensed_rms=b.getRMS(CS_channel)*1000.0/CS_sensitivity;
+  amps_rms=sensed_rms/2.0;
+  lcd.print(amps_rms);  
   
 }
-float getVolt(int channelName){
-  float result;
-  int readValue;             //C:\\Users\\dell\\AppData\\Local\\Temp\\arduino_build_944092/VoltageCurrentRMSmeasurement.ino.hex
-  int maxValue = 0;        
-  int minValue = 1024;         
-  uint32_t start_time = millis();
-  while((millis()-start_time) < 250){
-    readValue = analogRead(channelName);
-    if (readValue > maxValue){
-      maxValue = readValue;
-    }
-    if (readValue < minValue){
-      minValue = readValue;
-    }
-  }
-  result = ((maxValue - minValue) * 5.0)/1024.0;
-  return result;
-  }

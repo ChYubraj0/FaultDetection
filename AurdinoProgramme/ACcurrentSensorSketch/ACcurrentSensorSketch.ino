@@ -1,5 +1,5 @@
 #include <LiquidCrystal.h>
-int incomingVoltagePin=A0;
+int incomingVoltagePin=A1;
 int adcValue=0;
 double voltageReading=0;
 float sensorError=2500;

@@ -1,39 +1,29 @@
 #include<LiquidCrystal.h>
+#include"ACmeter.h"
+#include"errorhandling.h"
 LiquidCrystal lcd(8,9,10,11,12,13);
-const int analogChannel = A0;
-const float rConst=11.00;// r4/(r1+r4)
-const float tConst =19.17;// vsec*(lprim/lsec)^(1/2)
-int ADCvalue=0;
-double voltAtDivider=0;
-double voltAtSec=0;
-double voltAtPrim=0;
+const int analog_channel = A0;
+const float r_const=11.00;// r1/(r1+r2)
+const float t_const =19.17;// vsec*(lprim/lsec)^(1/2)
+double volt_at_divider=0;
+double volt_at_sec=0;
+double volt_at_prim=0;
+double measured_value;
+double error;
 void setup(){
   lcd.begin(20,4);
   lcd.setCursor(0,0);
   lcd.print("VoltageRMS=");
 }
+
 void loop(){
+  AcMeter a;
+  ErrorHandling e;
   lcd.setCursor(12,0);
-  voltAtDivider=getVoltAtR1()*0.707;
-  voltAtSec=rConst*voltAtDivider;
-  voltAtPrim=tConst*voltAtSec;
-  lcd.print(voltAtPrim);
+  volt_at_divider=(a.getRMS(analog_channel));
+  volt_at_sec=r_const*volt_at_divider;
+  measured_value=t_const*volt_at_sec ;
+  error= e.error(measured_value);
+  volt_at_prim=double(error)+measured_value;
+  lcd.print(volt_at_prim);
 }
-float getVoltAtR1(){
-  float result;
-  int readValue;             //C:\\Users\\dell\\AppData\\Local\\Temp\\arduino_build_452355/VoltageMeasurementSketch.ino.hex
-  int maxValue = 0;        
-  int minValue = 1024;         
-  uint32_t start_time = millis();
-  while((millis()-start_time) < 250){
-    readValue = analogRead(analogChannel);
-    if (readValue > maxValue){
-      maxValue = readValue;
-    }
-    if (readValue < minValue){
-      minValue = readValue;
-    }
-  }
-  result = ((maxValue - minValue) * 5.0)/1024.0;
-  return result;
-  }

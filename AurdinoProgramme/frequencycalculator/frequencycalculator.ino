@@ -8,15 +8,15 @@ void setup() {
   pinMode(interrupt_pin,INPUT);
   lcd.setCursor(1,0);
   lcd.print("Frequency:");
- 
+  attachInterrupt(digitalPinToInterrupt(interrupt_pin),fCalculate,state); 
    
 }
 void loop() {
-   attachInterrupt(digitalPinToInterrupt(interrupt_pin),fCalculate,state); 
-   delay(1000);
+   
+   delay(200);
    noInterrupts();
    lcd.setCursor(1,1);
-   lcd.print(count);
+   lcd.print(count*5);
    count=0;
    interrupts();
 }

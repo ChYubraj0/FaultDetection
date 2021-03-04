@@ -8,13 +8,14 @@ class AcMeter
   int maxValue = 0;        
   int minValue = 1024; 
   public:
-  uint32_t start_time = millis();
+  
   double getPeak(int channelName);
   double getRMS(int channelName);
   
 };
 
 double AcMeter::getPeak(int channelName){
+    uint32_t start_time = millis();
     while((millis()-start_time) < 250){
       readValue = analogRead(channelName);
       if (readValue > maxValue){
